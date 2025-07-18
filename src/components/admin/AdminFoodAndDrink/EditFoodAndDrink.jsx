@@ -1,0 +1,210 @@
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useUpdateFoodAndDrinkMutation } from "../../../api/foodAndDrinkApi";
+import { toast } from "react-toastify";
+import { FiUpload, FiX, FiRefreshCw } from "react-icons/fi";
+import { Form, Input, Select, Button, Space, message } from "antd";
+import { formatImage } from "@/utils/formatImage";
+
+const { Option } = Select;
+
+const EditFoodAndDrink = ({ setEditForm, editItem }) => {
+  const [form] = Form.useForm();
+  const [updateFoodAndDrink] = useUpdateFoodAndDrinkMutation();
+  const [imagePreview, setImagePreview] = useState(
+    editItem?.profile_picture ? formatImage(editItem.profile_picture) : null
+  );
+  const [imageFile, setImageFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDefaultImage, setIsDefaultImage] = useState(true); // To track default image or new image
+
+  useEffect(() => {
+    // Set initial form values
+    form.setFieldsValue({
+      name: editItem?.name,
+      type: editItem?.type,
+      price: editItem?.price
+    });
+  }, [form, editItem]);
+
+  const handleSubmit = async (values) => {
+    try {
+      setIsSubmitting(true);
+      // Create FormData object
+      const formData = new FormData();
+      formData.append("name", values.name || "");
+      formData.append("type", values.type || "");
+      formData.append("price", values.price || "0");
+      
+      if (imageFile) {
+        formData.append("profile_picture", imageFile);
+      } else if (!isDefaultImage && !imagePreview) {
+        // Send null when user deleted the image
+        formData.append("profile_picture", "null");
+      }
+
+      // Call API with FormData
+      const response = await updateFoodAndDrink({ 
+        id: editItem.id, 
+        data: formData 
+      }).unwrap();
+      
+      toast.success("Item updated successfully!");
+      setEditForm(false);
+    } catch (error) {
+      console.error("Error updating item:", error);
+      toast.error(`Update failed: ${error.data?.message || "Please try again"}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle file selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    
+    if (file) {
+      setImageFile(file);
+      setIsDefaultImage(false);
+      
+      // Create URL for image preview
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Show success message
+      message.success(`Upload ${file.name} successfully`);
+    }
+  };
+  
+  // Handle removing preview image
+  const handleClosePreview = () => {
+    if (imagePreview) {
+      // If preview created with URL.createObjectURL, revoke it to prevent memory leak
+      if (imageFile) {
+        URL.revokeObjectURL(imagePreview);
+      }
+      
+      // Reset to no image
+      setImageFile(null);
+      setImagePreview(null);
+      setIsDefaultImage(false); // Mark as original image deleted
+    }
+  };
+
+  // Restore original image
+  const handleRestoreOriginalImage = () => {
+    if (editItem?.profile_picture) {
+      setImagePreview(formatImage(editItem.profile_picture));
+      setImageFile(null);
+      setIsDefaultImage(true);
+      message.success("Original image restored");
+    }
+  };
+
+  return (
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSubmit}
+      autoComplete="off"
+      encType="multipart/form-data"
+    >
+      <Form.Item
+        label="Item Name"
+        name="name"
+        rules={[{ required: true, message: 'Please enter item name!' }]}
+      >
+        <Input placeholder="Enter item name..." />
+      </Form.Item>
+
+      <Form.Item
+        label="Type"
+        name="type"
+        rules={[{ required: true, message: 'Please select item type!' }]}
+      >
+        <Select placeholder="Select type">
+          <Option value="food">Food</Option>
+          <Option value="drink">Drink</Option>
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        label="Price (VND)"
+        name="price"
+        rules={[{ required: true, message: 'Please enter price!' }]}
+      >
+        <Input type="number" min={0} placeholder="Enter price..." />
+      </Form.Item>
+
+      <Form.Item label="Image">
+        <div className="mt-1 flex justify-center px-3 py-3 border-2 border-gray-200 border-dashed rounded-lg hover:border-gray-300 transition-colors duration-200">
+          <div className="space-y-2 text-center">
+            {imagePreview ? (
+              <div className="relative w-24 h-24 mx-auto">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleClosePreview}
+                  className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full transform translate-x-1/2 -translate-y-1/2 hover:bg-red-600"
+                  title="Remove image"
+                >
+                  <FiX className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <FiUpload className="mx-auto h-8 w-8 text-[var(--text-secondary)]" />
+                <div className="flex justify-center text-sm text-[var(--text-secondary)]">
+                  <label className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                    <span>Upload Image</span>
+                    <input
+                      type="file"
+                      className="sr-only"
+                      onChange={handleImageChange}
+                      accept="image/*"
+                    />
+                  </label>
+                  <p className="pl-1">or drag and drop</p>
+                </div>
+                <p className="text-xs text-[var(--text-secondary)]">PNG, JPG, GIF up to 10MB</p>
+              </>
+            )}
+            
+            {(!imagePreview && editItem?.profile_picture && !isDefaultImage) && (
+              <div className="mt-2">
+                <Button 
+                  type="dashed" 
+                  size="small" 
+                  icon={<FiRefreshCw className="mr-1" />} 
+                  onClick={handleRestoreOriginalImage}
+                >
+                  Restore Original Image
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </Form.Item>
+
+      <Form.Item className="mb-0">
+        <Space className="w-full justify-end">
+          <Button onClick={() => setEditForm(false)}>
+            Cancel
+          </Button>
+          <Button type="primary" htmlType="submit" loading={isSubmitting}>
+            Update
+          </Button>
+        </Space>
+      </Form.Item>
+    </Form>
+  );
+};
+export default EditFoodAndDrink;

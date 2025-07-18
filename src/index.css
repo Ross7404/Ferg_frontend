@@ -1,0 +1,631 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-dark: white;
+  --secondary-dark: white;
+  --text-primary: rgb(78, 78, 78);
+  --text-secondary: gray;
+  --accent-color: #3B82F6;
+  --accent-dark: #2559ac;
+}
+
+/* Ẩn thanh cuộn trên trình duyệt Webkit (Chrome, Safari) */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ẩn thanh cuộn trên Firefox, IE, Edge */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE và Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-dark);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-color);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--primary-dark);
+  border-radius: 10px;
+  margin: 2px 0;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-dark) var(--primary-dark);
+}
+
+/* Layout mượt mà */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  background-color: var(--primary-dark);
+  color: var(--text-primary);
+}
+
+.content-wrapper {
+  margin-top: 75px;
+  flex: 1;
+  min-height: calc(100vh - 75px);
+  background-color: var(--primary-dark);
+}
+
+/* Ngăn chặn hiệu ứng giật */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  background-color: var(--primary-dark);
+  color: var(--text-primary);
+}
+
+body {
+  position: relative;
+  transition: background-color 0.3s ease;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  background: var(--primary-dark) !important;
+}
+
+#main-content {
+  background: var(--primary-dark) !important;
+}
+
+/* Xóa bỏ hiệu ứng chuyển trang với opacity */
+.page-transition-enter,
+.page-transition-enter-active,
+.page-transition-exit,
+.page-transition-exit-active {
+  display: none;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+/* Animation cho QR Code Generator */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; backdrop-filter: blur(0); }
+  to { opacity: 1; backdrop-filter: blur(8px); }
+}
+
+.animate-backdropFadeIn {
+  animation: backdropFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+.animate-pulse-blue {
+  animation: pulse 2s infinite;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Hiệu ứng hover sáng lên cho các card */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+/* Hiệu ứng ripple cho nút bấm */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.8s;
+}
+
+.ripple:active:after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Scroll reveal animation classes */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover effect for blog cards */
+.blog-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Like button hover effect */
+.like-btn {
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Admin UI Responsive Styles */
+.responsive-table {
+  width: 100%;
+}
+
+/* Đảm bảo scroll chỉ xảy ra bên trong bảng */
+.ant-table-wrapper {
+  overflow-x: auto;
+}
+
+.ant-table {
+  min-width: 650px; /* Đảm bảo bảng có chiều rộng tối thiểu để buộc scroll */
+}
+
+/* Cải thiện phần header trong mobile */
+@media (max-width: 768px) {
+  .ant-table-thead > tr > th {
+    white-space: nowrap;
+    padding: 10px 8px;
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 10px 8px;
+  }
+  
+  /* Fix cho các nút action không bị cắt */
+  .ant-table-tbody > tr > td:last-child {
+    white-space: nowrap;
+  }
+}
+
+/* Đảm bảo cell cuối cùng không bị cắt */
+@media (max-width: 576px) {
+  .ant-table-tbody > tr > td {
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  /* Giữ cell action không wrap */
+  .ant-table-tbody > tr > td:last-child {
+    white-space: nowrap;
+  }
+}
+
+/* Custom styles cho sidebar và main content */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Cải thiện hiển thị modal trên mobile */
+@media (max-width: 576px) {
+  .ant-modal {
+    max-width: 95%;
+    margin: 0 auto;
+  }
+  
+  .ant-modal-body {
+    padding: 12px;
+  }
+}
+
+/* Custom styles cho pagination */
+.custom-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+@media (max-width: 576px) {
+  .custom-pagination .ant-pagination-item,
+  .custom-pagination .ant-pagination-prev,
+  .custom-pagination .ant-pagination-next {
+    min-width: 28px;
+    height: 28px;
+    line-height: 26px;
+  }
+}
+
+/* Thêm vào phần CSS cho admin tables */
+/* Đảm bảo container trang admin không bị overflow */
+#root, .min-h-screen, .flex-1 {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Điều chỉnh Container chứa bảng */
+.ant-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Cải thiện cuộn mượt trên iOS */
+}
+
+/* Đảm bảo ant-table chứa đủ không gian */
+.ant-table {
+  min-width: 650px;
+  width: 100%;
+}
+
+/* Custom styling cho bảng */
+.ant-table-thead > tr > th {
+  background-color: var(--primary-dark) !important;
+  font-weight: 600;
+  color: var(--text-primary) !important;
+}
+
+/* Cải thiện styling cho hàng của bảng */
+.ant-table-tbody > tr:hover > td {
+  background-color: var(--primary-dark) !important;
+}
+
+/* Style cho fixed columns */
+.ant-table-cell-fix-right {
+  background-color: white !important;
+  box-shadow: -5px 0 6px -3px rgba(0, 0, 0, 0.05) !important;
+}
+
+@media (max-width: 768px) {
+  /* Giảm padding trong các cell để tiết kiệm không gian */
+  .ant-table-tbody > tr > td,
+  .ant-table-thead > tr > th {
+    padding: 8px 6px;
+  }
+  
+  /* Cell hành động không wrap */
+  .ant-table-cell-fix-right {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  /* Cải thiện hiển thị nút */
+  .ant-btn {
+    padding: 2px 8px;
+    font-size: 12px;
+    height: auto;
+  }
+}
+
+/* Thêm CSS cho mobile sidebar */
+@media (max-width: 768px) {
+  /* Đảm bảo sidebar luôn nằm đúng vị trí */
+  .fixed.z-30 {
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+  }
+  
+  /* Cải thiện hiển thị menu trên mobile */
+  .fixed.z-30 .py-3 {
+    padding-top: 0.85rem !important;
+    padding-bottom: 0.85rem !important;
+  }
+  
+  /* Đảm bảo không có scroll ngang trong sidebar */
+  .fixed.z-30 .w-\[280px\] {
+    max-width: 280px !important;
+    width: 280px !important;
+  }
+}
+
+/* Đảm bảo khi overlay hiển thị, không thể scroll body */
+body.sidebar-open {
+  overflow: hidden;
+}
+
+/* Thêm CSS cho căn chỉnh icon trong sidebar */
+/* Fix icon lệch trong sidebar thu nhỏ */
+#admin-sidebar.w-\[70px\] .flex.items-center.justify-center.w-8,
+#admin-sidebar.w-\[70px\] .group span.w-8 {
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+  margin-left: 0 !important;
+}
+
+/* Đảm bảo button collapse có icon ở giữa */
+#admin-sidebar button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Cố định sidebar */
+#admin-sidebar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100vh !important;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secondary-dark);
+  color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  #admin-sidebar {
+    position: fixed !important;
+    height: 100vh !important;
+  }
+  
+  /* Đẩy content phù hợp với sidebar */
+  .min-h-screen.flex.flex-col.md\:flex-row {
+    padding-left: 0;
+  }
+  
+  .min-h-screen.flex.flex-col.md\:flex-row .flex-1 {
+    margin-left: 0;
+  }
+  
+  /* Khi sidebar thu nhỏ */
+  #admin-sidebar.w-\[70px\] ~ .flex-1 {
+    margin-left: 0;
+  }
+  
+  /* Khi sidebar mở rộng */
+  #admin-sidebar.w-\[280px\] ~ .flex-1 {
+    margin-left: 0;
+  }
+}
+
+/* Cải thiện sidebar scroll */
+.sidebar-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Ant Design Table Customization */
+.ant-table-wrapper {
+  background-color: var(--secondary-dark);
+}
+
+.ant-table {
+  background-color: var(--secondary-dark) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-table-thead > tr > th {
+  background-color: var(--primary-dark) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--secondary-dark) !important;
+}
+
+.ant-table-tbody > tr > td {
+  background-color: var(--secondary-dark) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--primary-dark) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: var(--primary-dark) !important;
+}
+
+/* Card and UI Element Styles */
+.card, .blog-card {
+  background-color: var(--secondary-dark);
+  color: var(--text-primary);
+  border: 1px solid var(--primary-dark);
+}
+
+.card:hover, .blog-card:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+/* Form Elements */
+input, select, textarea {
+  background-color: var(--secondary-dark) !important;
+  color: var(--text-primary) !important;
+  /* border: 1px solid var(--primary-dark) !important; */
+}
+
+/* input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+} */
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-dark);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-color);
+}
+
+/* Modal Styles */
+.ant-modal-content {
+  background-color: var(--secondary-dark) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-header {
+  background-color: var(--primary-dark) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-title {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-close-x {
+  color: var(--text-primary) !important;
+}
+
+/* Sidebar Styles */
+#admin-sidebar .menu-item {
+  color: var(--text-primary);
+}
+
+#admin-sidebar .menu-item:hover {
+  background-color: var(--primary-dark);
+}
+
+#admin-sidebar .menu-item.active {
+  background-color: var(--primary-dark);
+  color: var(--accent-color);
+}
+
+/* Pagination Styles */
+.ant-pagination-item {
+  background-color: var(--secondary-dark) !important;
+  /* border-color: var(--primary-dark) !important; */
+}
+
+.ant-pagination-item a {
+  color: var(--text-primary) !important;
+}
+
+.ant-pagination-item-active {
+  border-color: var(--accent-color) !important;
+}
+
+.ant-pagination-item-active a {
+  color: var(--accent-color) !important;
+}
+
+/* Dropdown Styles */
+.ant-select-dropdown {
+  background-color: var(--secondary-dark) !important;
+}
+
+.ant-select-item {
+  color: var(--text-primary) !important;
+}
+
+.ant-select-item-option-active {
+  background-color: var(--primary-dark) !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: var(--primary-dark) !important;
+  color: var(--accent-color) !important;
+}
+
+
