@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import logoHeader from "../../../public/slider/supmovie.jpg";
 
 export default function Slider() {
   const slides = [
     {
-      image: "https://cdn.galaxycine.vn/media/2025/3/25/dia-dao-1_1742874075591.jpg",
-      title: "Underground",
-      description: "A journey to discover secrets"
+      image: "https://bazaarvietnam.vn/wp-content/uploads/2025/07/tat-tan-tat-ve-bom-tan-sieu-anh-hung-superman-2025-niem-hy-vong-moi-cua-dc.jpg",
+      title: "Superman (2025)",
+      description: "Look Up!"
     },
     {
       image: "https://cdn.galaxycine.vn/media/2025/4/1/the-red-envelope-1_1743492961706.jpg",

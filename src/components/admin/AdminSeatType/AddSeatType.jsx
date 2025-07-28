@@ -83,7 +83,6 @@ export default function AddSeatType({ isShowFormCreate }) {
             rules={[
               { required: true, message: "Please enter the additional price" },
               { 
-                type: 'number', 
                 min: 0, 
                 message: "Additional price cannot be negative"
               }

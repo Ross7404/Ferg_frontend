@@ -48,7 +48,7 @@ export default function About() {
         >
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              <span className="inline-block text-white">B Cinema</span>
+              <span className="inline-block text-white">Ferg Cinema</span>
             </h1>
             <p className="text-lg md:text-xl max-w-3xl mx-auto text-white/90">
               Experience world-class cinema in Vietnam
